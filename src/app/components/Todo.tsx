@@ -1,49 +1,38 @@
 "use client";
-import { Task } from "@/types/tasks";
+import { Task } from "../pages/types";
 import { useEffect, useRef, useState } from "react";
-import { deleteTodo, updateTodo } from "/api";
+import { deleteTodo, editTodo } from "../pages/api";
 import { useRouter } from "next/navigation";
-import { PencilAltIcon, SaveIcon, TrashIcon } from "@heroicons/react/solid";
 
-interface TaskProps {
-  todo: Task;
-}
+import { Input } from "postcss";
+
 interface TaskProps {
   task: Task;
 }
 
-export default function Todo({ task }: TaskProps) {
-  const router = useRouter();
-
-  const inputRef = useRef<HTMLInputElement>(null);
+const Todo = ({ task }: TaskProps) => {
+  const ref = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTaskText, setEditedTaskText] = useState(task.text);
+  const [editedTaskTitle, setEditedTaskTitle] = useState(task.text);
 
   useEffect(() => {
     if (isEditing) {
-      // isEditingがtrueならinputにフォーカスを当てる
-      inputRef.current?.focus();
+      ref.current?.focus();
     }
   }, [isEditing]);
 
-  const handleEditButtonClick = () => {
+  const handleEdit = async () => {
     setIsEditing(true);
   };
 
-  const handleSaveButtonClick = async () => {
-    await updateTodo(task.id, editedTaskText);
+  const handleSave = async () => {
+    await editTodo(task.id, editedTaskTitle);
     setIsEditing(false);
-    router.refresh();
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedTaskText(event.target.value);
   };
 
   const handleDelete = async () => {
     await deleteTodo(task.id);
-    router.refresh();
   };
 
   return (
@@ -53,33 +42,35 @@ export default function Todo({ task }: TaskProps) {
     >
       {isEditing ? (
         <input
-          ref={inputRef}
-          value={editedTaskText}
-          onChange={handleInputChange}
+          ref={ref}
+          type="text"
           className="mr-2 py-1 px-2 rounded border-gray-400 border"
+          value={editedTaskTitle}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEditedTaskTitle(e.target.value)
+          }
         />
       ) : (
-        <span className="text-gray-700">{task.text}</span>
+        <span>{task.text}</span>
       )}
-      <div className="flex">
+
+      <div>
         {isEditing ? (
-          <SaveIcon
-            onClick={handleSaveButtonClick}
-            className="h-5 w-5 text-blue-500 hover:text-blue-700 cursor-pointer mr-3"
-          />
+          <button className="text-blue-500 mr-3" onClick={handleSave}>
+            save
+          </button>
         ) : (
-          <>
-            <PencilAltIcon
-              onClick={handleEditButtonClick}
-              className="h-5 w-5 text-green-400 hover:text-green-700 cursor-pointer mr-3"
-            />
-          </>
+          <button className="text-green-500 mr-3" onClick={handleEdit}>
+            edit
+          </button>
         )}
-        <TrashIcon
-          onClick={handleDelete}
-          className="h-5 w-5 text-red-500 hover:text-red-700 cursor-pointer"
-        />
+
+        <button className="text-red-500" onClick={handleDelete}>
+          Delete
+        </button>
       </div>
     </li>
   );
-}
+};
+
+export default Todo;
