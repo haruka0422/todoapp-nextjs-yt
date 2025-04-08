@@ -18,7 +18,10 @@ export const addTodo = async (todo: Task): Promise<Task> => {
   return newTodo;
 };
 
-export const updateTodo = async (id: string, newText: string): Promise<Task> => {
+export const updateTodo = async (
+  id: string,
+  newText: string
+): Promise<Task> => {
   const res = await fetch(`http://localhost:3001/tasks/${id}`, {
     method: "PUT",
     headers: {
@@ -31,7 +34,7 @@ export const updateTodo = async (id: string, newText: string): Promise<Task> => 
 };
 
 export const deleteTodo = async (id: string): Promise<Task> => {
-  const res = await fetch(`http://localhost:3001/tasks/tasks/${id}`, {
+  const res = await fetch(`http://localhost:3001/tasks/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
