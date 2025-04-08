@@ -1,7 +1,8 @@
 "use client";
+
 import { Task } from "../pages/types";
 import { useEffect, useRef, useState } from "react";
-import { deleteTodo, editTodo } from "../pages/api";
+import { deleteTodo, updateTodo } from "../pages/api";
 import { useRouter } from "next/navigation";
 
 import { Input } from "postcss";
@@ -27,7 +28,7 @@ const Todo = ({ task }: TaskProps) => {
   };
 
   const handleSave = async () => {
-    await editTodo(task.id, editedTaskTitle);
+    await updateTodo(task.id, editedTaskTitle);
     setIsEditing(false);
   };
 

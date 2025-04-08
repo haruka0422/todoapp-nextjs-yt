@@ -24,3 +24,4 @@ const TodoList = ({ tasks }: TodoListProps) => {
     </ul>
   );
 };
+export default TodoList;
