@@ -12,6 +12,7 @@ interface TaskProps {
 }
 
 const Todo = ({ task }: TaskProps) => {
+  const router = useRouter();
   const ref = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -30,10 +31,16 @@ const Todo = ({ task }: TaskProps) => {
   const handleSave = async () => {
     await updateTodo(task.id, editedTaskTitle);
     setIsEditing(false);
+    router.refresh();
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedTaskTitle(event.target.value);
   };
 
   const handleDelete = async () => {
     await deleteTodo(task.id);
+    router.refresh();
   };
 
   return (
@@ -47,9 +54,7 @@ const Todo = ({ task }: TaskProps) => {
           type="text"
           className="mr-2 py-1 px-2 rounded border-gray-400 border"
           value={editedTaskTitle}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEditedTaskTitle(e.target.value)
-          }
+          onChange={handleInputChange}
         />
       ) : (
         <span>{task.text}</span>
